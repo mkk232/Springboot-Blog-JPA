@@ -1,4 +1,4 @@
-package dev.mkk7.blog.controller;
+package dev.mkk7.blog.test;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
