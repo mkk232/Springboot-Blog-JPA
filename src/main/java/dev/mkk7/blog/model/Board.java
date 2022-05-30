@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,15 +34,19 @@ public class Board {
     @ColumnDefault("0")
     private int count; // 조회수
 
-    @ManyToOne // Board = Many, User = One -> 한 명의 유저는 여러개의 게시글을 쓸 수 있다.
+    @ManyToOne(fetch = FetchType.EAGER)
+                // Board = Many, User = One -> 한 명의 유저는 여러개의 게시글을 쓸 수 있다.
                 // OneToOne = 한 명의 유저는 하나의 게시글만 쓸 수 있다.
                 // OneToMany = 여러명의 유저는 하나의 게시글만 쓸 수 있다. ?
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId")///
     private User userId; // DB는 오브젝트를 저장할 수 없다. FK 사용, 자바는 오브젝트를 사용할 수 있다.
                          // JPA에서는 오브젝트를 저장할 수 있다.
-/*    @OneToMany
-    @JoinColumn(name = "replyId")
-    private Reply reply;*/
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+//    mappedBy : 연관관계의 주인이 아니다. 즉 FK가 아니다. DB에 컬럼을 만들지 마세요..
+//    @JoinColumn(name = "replyId") 이게 필요없다 ?
+//                                  Table에 FK가 필요없다..
+    private List<Reply> reply;
 
     @CreationTimestamp
     private Timestamp createDate;
