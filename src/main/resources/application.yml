@@ -22,7 +22,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create # create가 되어있는지 확인해야함. 왜냐하면 이것을 수정해서 update, none.. 할수있음.
+      ddl-auto: update # create가 되어있는지 확인해야함. 왜냐하면 이것을 수정해서 update, none.. 할수있음.
                        # create는 프로젝트를 재실행 할 때 마다 새로 생성하겠다는 의미임.
                        # 프로젝트 완성 후 update로 변경해야 함.
       naming:
