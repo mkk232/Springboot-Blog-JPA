@@ -1,7 +1,7 @@
 server:
   port: 8000
   servlet:
-    context-path: /blog
+    context-path: /
     encoding:
       charset: UTF-8
       enabled: true
@@ -29,7 +29,7 @@ spring:
         #physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # Entity(테이블)을 만들 때 변수명 그대로 데이터베이스 필드에 넣어준다는 의미.
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy # Entity(테이블)을 만들 때 카멜 표기법을 언더바 표기법으로 바꿔서 넣음.
       use-new-id-generator-mappings: false # 넘버링 방식, false는 jpa가 사용하는 기본 넘버링을 따라가지 않는다.
-    show-sql: true
+#    show-sql: true
     properties:
       hibernate.format_sql: true
       globally_quoted_identifiers: true

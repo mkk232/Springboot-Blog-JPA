@@ -3,6 +3,10 @@ let index = {
         $("#btn-save").on("click", () => { // function(){}, this를 바인딩하기 위해서 !
             this.save();
         });
+
+        // $("#btn-login").on("click", () => { // function(){}, this를 바인딩하기 위해서 !
+        //     this.login();
+        // });
     },
 
     save: function () {
@@ -19,18 +23,42 @@ let index = {
         $.ajax({
             // 회원가입 수행 요청
             type: "POST",
-            url: "/blog/api/user",
+            url: "/auth/joinProc",
             data: JSON.stringify(data), // http body 데이터
             contentType: "application/json; charset=utf-8", // body 데이터의 mime 타입
             dataType: "json" // json으로 응답을 받을 때 json -> javascript 오브젝트로 변경해서 받겠다.
         }).done(function(resp){
             alert("회원가입이 완료 되었습니다.");
+            //console.log(resp);
+            location.href="/";
+        }).fail(function(error) {
+            alert(JSON.stringify(error));
+        }); // ajax 통신을 이용해서 3개의 데이터를 json으로 변경하여 insert 요청
+    },
+    /*
+    login: function () {
+        let data = {
+            username: $("#username").val(),
+            password: $("#password").val()
+        }
+
+        $.ajax({
+            // 회원가입 수행 요청
+            type: "POST",
+            url: "/api/user/login",
+            data: JSON.stringify(data), // http body 데이터
+            contentType: "application/json; charset=utf-8", // body 데이터의 mime 타입
+            dataType: "json" // json으로 응답을 받을 때 json -> javascript 오브젝트로 변경해서 받겠다.
+        }).done(function(resp){
+            alert("로그인이 완료 되었습니다.");
             console.log(resp);
-            //location.href="/blog";
+            location.href="/";
         }).fail(function(error) {
             alert(JSON.stringify(error));
         }); // ajax 통신을 이용해서 3개의 데이터를 json으로 변경하여 insert 요청
     }
+
+     */
 }
 
 index.init();

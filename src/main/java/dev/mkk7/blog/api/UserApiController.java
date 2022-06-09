@@ -6,9 +6,12 @@ import dev.mkk7.blog.model.User;
 import dev.mkk7.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 public class UserApiController {
@@ -16,12 +19,30 @@ public class UserApiController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/api/user")
+
+
+//    @Autowired
+//    private HttpSession session;
+
+    @PostMapping("/auth/joinProc")
     public ResponseDto<Integer> save(@RequestBody User user) {
         System.out.println("UserApiController 호출됨...");
         // 실제로 DB에 insert를 하고 아래에서 return이 되면 됨.
-        user.setRole(RoleType.USER);
-        int result = this.userService.save(user);
-        return new ResponseDto<Integer>(HttpStatus.OK.value(), result); // 1이면 성공, -1이면 실패
+        this.userService.save(user);
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1); // 1이면 성공, -1이면 실패
     }
+
+    // 다음시간에 스프링 시큐리티 이용해서 로그인 !!
+/*    @PostMapping("/api/user/login")
+    public ResponseDto<Integer> login(@RequestBody User user, HttpSession session) {
+        System.out.println("UserApiController : login 호출됨");
+        User principal = userService.login(user); // principal(접근 주체)
+
+        if(principal != null) {
+            session.setAttribute("principal", principal);
+        }
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1); // 1이면 성공, -1이면 실패
+    }*/
+
+
 }
