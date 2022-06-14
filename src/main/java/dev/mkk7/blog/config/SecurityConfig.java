@@ -5,6 +5,7 @@ import dev.mkk7.blog.model.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() // csrf 토큰 비활성화(테스트 시 걸어두는게 좋음)
                 .authorizeRequests() // http Request가 들어오면
-                .antMatchers("/", "/auth/**", "/js/**", "/css/**", "/image/**", "/dummy/**") // 이 경로는
+                .antMatchers("/", "/auth/**", "/js/**", "/css/**", "/images/**", "/dummy/**") // 이 경로는
                 .permitAll() // 모두 허락한다
                 .anyRequest() // 이를 제외한 다른 Request는
                 .authenticated() // 인증이 되어야 한다.
@@ -49,4 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/"); // 정상적으로 요청이 완료되면 여기로 온다.
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }
