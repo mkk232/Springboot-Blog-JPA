@@ -1,9 +1,12 @@
 package dev.mkk7.blog.api;
 
 import dev.mkk7.blog.config.auth.PrincipalDetail;
+import dev.mkk7.blog.dto.ReplySaveRequestDto;
 import dev.mkk7.blog.dto.ResponseDto;
 import dev.mkk7.blog.model.Board;
+import dev.mkk7.blog.model.Reply;
 import dev.mkk7.blog.model.User;
+import dev.mkk7.blog.repository.BoardRepository;
 import dev.mkk7.blog.service.BoardService;
 import dev.mkk7.blog.service.UserService;
 import org.apache.coyote.Response;
@@ -17,6 +20,7 @@ public class BoardApiController {
 
     @Autowired
     private BoardService boardService;
+    
 
     @PostMapping("/api/board")
     public ResponseDto<Integer> save(@RequestBody Board board,
@@ -38,6 +42,13 @@ public class BoardApiController {
                                        @RequestBody Board board) {
         boardService.update(id, board);
         return new ResponseDto<>(HttpStatus.OK.value(), 1);
+    }
+    
+    /* 데이터를 받을 때 컨트롤러에서 DTO를 만들어서 받는게 좋다. */
+    @PostMapping("/api/board/{boardId}/reply")
+    public Reply replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
+    	
+        return boardService.replySave(replySaveRequestDto);
     }
 
 }

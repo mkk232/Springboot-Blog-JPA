@@ -9,6 +9,8 @@ import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -46,7 +48,9 @@ public class Board {
 //    mappedBy : 연관관계의 주인이 아니다. 즉 FK가 아니다. DB에 컬럼을 만들지 마세요..
 //    @JoinColumn(name = "replyId") 이게 필요없다 ?
 //                                  Table에 FK가 필요없다..
-    private List<Reply> reply;
+    @JsonIgnoreProperties({"board"})
+    @OrderBy("id desc")
+    private List<Reply> replys;
 
     @CreationTimestamp
     private Timestamp createDate;

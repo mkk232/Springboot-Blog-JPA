@@ -7,14 +7,21 @@ import dev.mkk7.blog.config.auth.PrincipalDetail;
 import dev.mkk7.blog.model.KakaoProfile;
 import dev.mkk7.blog.model.OAuthToken;
 import dev.mkk7.blog.model.User;
+import dev.mkk7.blog.service.UserService;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,6 +36,15 @@ import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class UserController {
+	
+	@Value("${cos.key}")
+	private String cosKey;
+	
+	@Autowired
+	private UserService userService;
+	
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @GetMapping("/auth/joinForm")
     public String joinForm() {
@@ -46,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/auth/kakao/callback")
-    public @ResponseBody String kakaoCallback(String code) { // DATA를 리턴해주는 컨트롤러 함수가 됨.
+    public String kakaoCallback(String code) { // DATA를 리턴해주는 컨트롤러 함수가 됨.
 
         // POST 방식으로 key - value 데이터를 요청(카카오쪽으로) RestTemplate
         // Retrofit2 -> 안드로이드에서 많이 씀
@@ -125,15 +141,34 @@ public class UserController {
         // User 오브젝트 : username, password, email
         System.out.println("카카오 아이디(번호) : " + kakaoProfile.getId());
         System.out.println("카카오 이메일 : " + kakaoProfile.getKakao_account().getEmail());
-
         System.out.println("블로그서버 유저네임 : " + kakaoProfile.getKakao_account().getEmail() + 
         		"_" + kakaoProfile.getId());
-        
         System.out.println("블로그서버 이메일 : " + kakaoProfile.getKakao_account().getEmail());
+        System.out.println("블로그서버 패스워드 : " + cosKey);
         
-        // 랜덤 값
-        UUID garbagePassword = UUID.randomUUID();
-        System.out.println("블로그서버 패스워드 : " + garbagePassword);
-        return response2.getBody();
+        // UUID란 -> 중복되지 않는 어떤 특정값을 만들어내는 알고리즘
+        User kakaoUser = User.builder()
+        		.username(kakaoProfile.getKakao_account().getEmail() + "_" + kakaoProfile.getId())
+        		.password(cosKey)
+        		.email(kakaoProfile.getKakao_account().getEmail())
+        		.oauth("kakao")
+        		.build();
+        		
+        
+        // 가입자 혹은 비가입자 체크 해서 처리
+        User originUser = userService.findByIdForUser(kakaoUser.getUsername());
+        if(originUser.getUsername() == null) {
+        	System.out.println("기존 회원이 아닙니다. 회원가입을 진행합니다.");
+        	userService.save(kakaoUser);
+        }
+        
+        // 로그인 처리
+        
+        // 자동로그인 진행
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), cosKey));
+        SecurityContextHolder.getContext().setAuthentication(authentication); // 세션 등록
+        
+        return "redirect:/";
     }
 }

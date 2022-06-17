@@ -38,6 +38,9 @@ public class User {
     @Enumerated(EnumType.STRING)
 //    @ColumnDefault("'user'") // default는 안에 홑따옴표를 사용해야 함. Enum을 사용하기 위해 주석
     private RoleType role; // Enum을 사용하는게 좋음. Enum을 사용하면 도메인을 만들 수 있음. 회원가입 시 이 사람은 admin, user... 등
+    
+    
+    private String oauth; // kakao, google ... flag
 
     @CreationTimestamp // 시간이 자동으로 입력이 됨.
     private Timestamp createDate;
