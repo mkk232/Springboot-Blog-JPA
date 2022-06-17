@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,7 +46,7 @@ public class Board {
     private User user; // DB는 오브젝트를 저장할 수 없다. FK 사용, 자바는 오브젝트를 사용할 수 있다.
                          // JPA에서는 오브젝트를 저장할 수 있다.
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 //    mappedBy : 연관관계의 주인이 아니다. 즉 FK가 아니다. DB에 컬럼을 만들지 마세요..
 //    @JoinColumn(name = "replyId") 이게 필요없다 ?
 //                                  Table에 FK가 필요없다..

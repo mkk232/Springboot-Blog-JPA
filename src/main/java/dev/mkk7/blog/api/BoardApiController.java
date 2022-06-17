@@ -9,6 +9,10 @@ import dev.mkk7.blog.model.User;
 import dev.mkk7.blog.repository.BoardRepository;
 import dev.mkk7.blog.service.BoardService;
 import dev.mkk7.blog.service.UserService;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +20,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor // lombok이 있어야 DI 가능.
 public class BoardApiController {
-
-    @Autowired
-    private BoardService boardService;
+	
+	private final BoardService boardService;
     
 
     @PostMapping("/api/board")
@@ -47,8 +51,17 @@ public class BoardApiController {
     /* 데이터를 받을 때 컨트롤러에서 DTO를 만들어서 받는게 좋다. */
     @PostMapping("/api/board/{boardId}/reply")
     public Reply replySave(@RequestBody ReplySaveRequestDto replySaveRequestDto) {
-    	
+    	System.out.println("reply save...");
         return boardService.replySave(replySaveRequestDto);
     }
+    
+    @DeleteMapping("/api/board/{boardId}/reply/{replyId}")
+    public ResponseDto<Integer> deleteReply(@PathVariable int replyId) {
+    	boardService.deleteReply(replyId);
+    	
+    	return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
+
+
 
 }

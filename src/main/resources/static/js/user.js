@@ -14,7 +14,7 @@ let index = {
     },
 
     save: function () {
-        let data = {
+        let data = { 
             username: $("#username").val(),
             password: $("#password").val(),
             email: $("#email").val()
@@ -32,11 +32,18 @@ let index = {
             contentType: "application/json; charset=utf-8", // body 데이터의 mime 타입
             dataType: "json" // json으로 응답을 받을 때 json -> javascript 오브젝트로 변경해서 받겠다.
         }).done(function(resp){
-            alert("회원가입이 완료 되었습니다.");
+			console.log(resp);
+			if(resp.tatus === 500) {
+				alert('회원가입에 실패하였습니다.');
+			} else{
+	            alert("회원가입이 완료 되었습니다.");
+			}
             //console.log(resp);
             location.href="/";
         }).fail(function(error) {
-            alert(JSON.stringify(error));
+			console.log(error);
+			console.log(JSON.stringify(error));
+            alert('회원가입에 실패하였습니다.!!');
         }); // ajax 통신을 이용해서 3개의 데이터를 json으로 변경하여 insert 요청
     },
     /*

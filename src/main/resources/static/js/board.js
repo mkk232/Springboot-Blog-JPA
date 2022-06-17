@@ -47,7 +47,7 @@ let index = {
             alert("삭제가 완료되었습니다.");
             location.href="/";
         }).fail(function(error) {
-            alert(JSON.stringify(error));
+            alert("게시글 삭제에 실패하였습니다.");
         });
     },
 
@@ -95,17 +95,31 @@ let index = {
         }).done(function(resp){
             //alert("댓글 작성이 완료되었습니다.");
             console.log(resp);
-            li = "<li id='reply--1' class='list-group-item d-flex justify-content-between'>";
+            li = "<li id='reply-"+resp.id+"' class='list-group-item d-flex justify-content-between'>";
             li += "<div>"+ resp.content +"</div>";
             li += "<div class='d-flex'>" 
             	+ "<div class='font-italic'>작성자 : "+ resp.users.username +"&nbsp;</div>"
-            	+ "<div class='font-italic'>작성일시 : "+ resp.createDate +"&nbsp;</div>"
-            	+ "<button class='badge'>삭제</button>"
-             +"</div>";
+            	+ "<div class='font-italic'>작성일시 : "+ resp.createDate +"&nbsp;</div>";
+            	
+            li += "<button class='badge' onclick='index.replyDelete("+resp.board.id + ", " + resp.id+" )'>삭제</button>";
+            li += "</div>";
             li += "</li>";
-            $("#reply--box").prepend(li);
+            $("#reply-box").prepend(li);
             $("#reply-content").val('');
             //location.href=`/board/${boardId}`;
+        }).fail(function(error) {
+            alert("댓글 등록에 실패하였습니다.");
+        });
+    },
+    
+    replyDelete: function (boardId, replyId) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/board/${boardId}/reply/${replyId}`,
+            dataType: "json"
+        }).done(function(resp){
+            alert("댓글 삭제 성공");
+            location.href=`/board/${boardId}`;
         }).fail(function(error) {
             alert(JSON.stringify(error));
         });
